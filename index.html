@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" class="app">
+    <head>
+        <meta charset="utf-8"/>
+        <title>AppName</title>
+        <meta name="description" content="App Description">
+        <meta name="keywords" content="mobile, app, ios, android">
+        <meta http-equiv="Content-Security-Policy" content="default-src *; style-src * 'unsafe-inline'; script-src * 'unsafe-eval'">
+
+        <!-- Mobile Specific Meta Tags -->
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="format-detection" content="telephone=no">
+
+        <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,300italic,400italic,500italic,700italic">
+        <link type="text/css" rel="stylesheet" href="assets/css/app.css">
+
+        <script type="application/javascript" src="http://d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js" data-apikey="2cb16f0a0e13aa153ac2d6c3c60d71bc"></script>
+
+    </head>
+    <body ng-controller="AppController" class="{{bodyClass}}">
+
+        <div id="app" ui-view></div>
+
+        <script src="cordova.js"></script>
+
+        <script src="assets/js/libs.js"></script>
+        <script src="assets/js/angular.js"></script>
+        <script src="assets/js/vendor.js"></script>
+        <script src="assets/js/app.js"></script>
+        <script src="assets/js/controllers.js"></script>
+        <script src="assets/js/directives.js"></script>
+        <script src="assets/js/filters.js"></script>
+        <script src="assets/js/services.js"></script>
+    </body>
+</html>

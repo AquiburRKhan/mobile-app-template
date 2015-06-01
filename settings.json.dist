@@ -1,0 +1,25 @@
+{
+  "security": {
+    "encryption_key": ""
+  },
+  "app": {
+    "environment": "production",
+    "update_check_url": "",
+    "store": {
+      "ios_app_id": "",
+      "android_app_id": ""
+    },
+    "support": {
+      "website": "",
+      "email": "",
+      "info": "",
+      "terms_of_use": "",
+      "privacy_policy": ""
+    },
+    "development": {},
+    "production": {}
+  },
+  "google": {
+    "analytics": ""
+  }
+}

@@ -1,0 +1,93 @@
+var user_dismissed_bugs = false;
+
+if(typeof StatusBar == 'undefined')
+{
+	var StatusBar = {};
+}
+
+Bugsnag.releaseStage = (typeof settings !== 'undefined') ? settings.app.environment : 'production';
+Bugsnag.appVersion = (typeof package !== 'undefined') ? package.version : '0.0.0';
+Bugsnag.beforeNotify = function(payload)
+{
+	// Do not use bugsnag during developement
+	if(Bugsnag.releaseStage == 'development')
+	{
+		return false;
+	}
+
+	var ignored_errors = [
+		'cordova',
+		'StatusBar',
+		'SQL'
+	];
+
+	if(payload.message && new RegExp(ignored_errors.join("|")).test(payload.message) )
+	{
+		return false;
+	}
+	else if(payload.file.indexOf('angular.js') > -1)
+	{
+		return false;
+	}
+
+	var clone = JSON.parse(JSON.stringify(payload));
+	delete clone.apiKey;
+	delete clone.notifierVersion;
+
+	if(clone && typeof clone.name !== 'undefined' && typeof clone.message !== 'undefined')
+	{
+		phonegap.stats.event('Bugsnag Error', clone.name, clone.message);
+
+		if( !user_dismissed_bugs)
+		{
+			phonegap.notification.confirm(
+				"Sorry for the inconvenience, but it looks like you've stumbled upon a bug in our software.",
+				function(results){
+					if(results == 2)
+					{
+						var use_browser = false;
+						if(typeof cordova !== 'undefined' && typeof cordova.plugins.email !== 'undefined')
+						{
+							cordova.plugins.email.isServiceAvailable(
+								function (isAvailable) {
+									if( !isAvailable)
+									{
+										use_browser = true;
+									}
+									else
+									{
+										cordova.plugins.email.open({
+											to: [ 'support@manifestinteractive.com' ],
+											subject: 'JavaScript Error in App',
+											body: "Greetings,<br \/><br \/>I would like to submit an Error I detected in your App.<br \/><br \/>The following information was generated for your support staff:<br \/><br \/><pre>" + JSON.stringify(clone) + "</pre>",
+											isHtml: true
+										});
+									}
+								}
+							);
+						}
+						else
+						{
+							use_browser = true;
+						}
+
+						if(use_browser)
+						{
+							var subject = 'JavaScript Error in App';
+							var body = "Greetings,\n\nI would like to submit an Error I detected in your App.\n\n The following information was generated for your support staff:\n\n";
+							body += JSON.stringify(clone);
+							window.open('mailto:support@manifestinteractive?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body), "_self");
+						}
+					}
+					else
+					{
+						window.user_dismissed_bugs = true;
+					}
+				},
+				"We've Detected a Problem",
+				['Dismiss', 'Submit Bug']
+			);
+		}
+	}
+	return true;
+};
